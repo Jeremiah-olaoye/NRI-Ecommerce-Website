@@ -137,7 +137,7 @@ function Contact() {
 
                 <p className="d-flex align-items-start gap-2 text-muted mb-4">
                   <FaClock className="text-gold mt-1" />
-                  <span>TODO: add your actual business hours here.</span>
+                  <span>Available 24/7</span>
                 </p>
 
                 <div className="ratio ratio-4x3 rounded-4 overflow-hidden shadow-sm">
