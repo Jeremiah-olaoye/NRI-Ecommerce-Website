@@ -1,6 +1,7 @@
 // src/components/product/ProductCard.jsx
 import { Link } from 'react-router-dom'
-import { FaHeart, FaRegHeart } from 'react-icons/fa'
+import { useState } from 'react'
+import { FaHeart, FaRegHeart, FaPlus, FaMinus } from 'react-icons/fa'
 import { useCart } from '../../hooks/useCart'
 import { useWishlist } from '../../hooks/useWishlist'
 import { formatCurrency } from '../../utils/formatCurrency'
@@ -8,9 +9,18 @@ import { formatCurrency } from '../../utils/formatCurrency'
 function ProductCard({ product }) {
   const { addItem } = useCart()
   const { isWishlisted, toggleWishlist } = useWishlist()
+  const [quantity, setQuantity] = useState(1)
 
   const inStock = product.stock > 0
   const wishlisted = isWishlisted(product.id)
+
+  const decrease = () => setQuantity((q) => Math.max(1, q - 1))
+  const increase = () => setQuantity((q) => q + 1)
+
+  const handleAddToCart = () => {
+    addItem(product, quantity)
+    setQuantity(1)
+  }
 
   return (
     <div className="card h-100 shadow-sm position-relative">
@@ -38,6 +48,29 @@ function ProductCard({ product }) {
         <p className={`small mb-2 ${inStock ? 'text-success' : 'text-danger'}`}>
           {inStock ? 'In Stock' : 'Out of Stock'}
         </p>
+
+        {inStock && (
+          <div className="d-flex align-items-center justify-content-center gap-3 mb-2">
+            <button
+              className="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center"
+              style={{ width: '30px', height: '30px' }}
+              onClick={decrease}
+              aria-label="Decrease quantity"
+            >
+              <FaMinus size={10} />
+            </button>
+            <span className="fw-semibold">{quantity}</span>
+            <button
+              className="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center"
+              style={{ width: '30px', height: '30px' }}
+              onClick={increase}
+              aria-label="Increase quantity"
+            >
+              <FaPlus size={10} />
+            </button>
+          </div>
+        )}
+
         <div className="d-flex gap-2 mt-auto">
           <Link to={`/products/${product.slug}`} className="btn btn-outline-secondary btn-sm flex-fill">
             View Details
@@ -45,7 +78,7 @@ function ProductCard({ product }) {
           <button
             className="btn btn-success btn-sm flex-fill"
             disabled={!inStock}
-            onClick={() => addItem(product, 1)}
+            onClick={handleAddToCart}
           >
             Add to Cart
           </button>
